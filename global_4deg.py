@@ -116,7 +116,7 @@ class GlobalFourDegreeSetup(VerosSetup):
 
         # custom variables
         state.dimensions["nmonths"] = 12
-        forc_dim = ('xt, yt', 'nmonths')
+        forc_dim = ('xt', 'yt', 'nmonths')
         state.var_meta.update(
             sss_clim=Variable("sss_clim", ("xt", "yt", "nmonths"), "", "", time_dependent=False),
             sst_clim=Variable("sst_clim", ("xt", "yt", "nmonths"), "", "", time_dependent=False),
@@ -300,9 +300,9 @@ def set_forcing_kernel(state):
         with netCDF4.Dataset(PATH + file) as infile:
             return npx.squeeze(infile[var][:].T)[:,:,2,:]
 
-    t_grid_hor = (vs.xt[2:-2], vs.yt[2:-2], npx.arange(12))
-    xt_forc = netCDF4.Dataset(PATH + DATA_ML)['latitude'][:]
-    yt_forc = netCDF4.Dataset(PATH + DATA_ML)['longitude'][:]
+    t_grid_hor = (vs.xt, vs.yt, npx.arange(12))
+    xt_forc = netCDF4.Dataset(PATH + DATA_ML)['longitude'][:]
+    yt_forc = netCDF4.Dataset(PATH + DATA_ML)['latitude'][::-1]
 
     uWind_data = read_netcdf_forcing('u',DATA_ML)
     uWind_data = veros.tools.interpolate((xt_forc, yt_forc, npx.arange(12)), uWind_data, t_grid_hor)
